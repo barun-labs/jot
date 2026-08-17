@@ -28,21 +28,21 @@ Item {
   property color borderColor: Color.menu.border
   property var borderSpec: Border.surfaceSpec("menu", "border", borderColor, Math.max(1, Style.space(1)))
   property color scrim: Color.menu.scrim
-  readonly property int cornerRadius: 6
-  property int contentMargin: 12
+  readonly property int cornerRadius: 8
+  property int contentMargin: 16
 
   readonly property string inboxPath: Quickshell.env("HOME") + "/notes/inbox.md"
 
-  // Dynamic dimensions based on content and mode
-  readonly property int captureCardWidth: Math.min(480, panel.width - Style.gapsOut * 2)
+  // Refined compact dimensions
+  readonly property int captureCardWidth: Math.min(420, panel.width - Style.gapsOut * 2)
   readonly property int captureCardHeight: Math.min(
-    contentMargin * 2 + Math.max(34, contentText.contentHeight + 10),
+    contentMargin * 2 + Math.max(40, captureFlickable.contentHeight),
     panel.height - Style.gapsOut * 2)
 
-  readonly property int inboxCardWidth: Math.min(540, panel.width - Style.gapsOut * 2)
+  readonly property int inboxCardWidth: Math.min(480, panel.width - Style.gapsOut * 2)
   readonly property int inboxCardHeight: Math.min(
     Math.max(170, inboxView.preferredHeight + contentMargin * 2),
-    Math.min(460, panel.height - Style.gapsOut * 2)
+    Math.min(500, panel.height - Style.gapsOut * 2)
   )
 
   property int currentCardWidth: mode === "inbox" ? inboxCardWidth : captureCardWidth
@@ -158,7 +158,7 @@ Item {
 
     Rectangle {
       anchors.fill: parent
-      color: root.scrim
+      color: Qt.rgba(0,0,0,0.4)
     }
 
     MouseArea {
@@ -175,12 +175,13 @@ Item {
       color: root.background
       borderSpec: root.borderSpec
       padding: root.contentMargin
+      clip: true // Prevents anything rendering outside the box
 
       Behavior on width {
-        NumberAnimation { duration: 120; easing.type: Easing.OutCubic }
+        NumberAnimation { duration: 150; easing.type: Easing.OutQuart }
       }
       Behavior on height {
-        NumberAnimation { duration: 120; easing.type: Easing.OutCubic }
+        NumberAnimation { duration: 150; easing.type: Easing.OutQuart }
       }
 
       MouseArea { anchors.fill: parent; onClicked: {} }
@@ -254,22 +255,39 @@ Item {
           }
         }
 
-        Item {
+        Flickable {
+          id: captureFlickable
           anchors.fill: parent
+          contentWidth: width
+          contentHeight: contentText.implicitHeight
+          clip: true
+          boundsBehavior: Flickable.StopAtBounds
 
           Text {
             id: contentText
-            anchors.left: parent.left
-            anchors.right: parent.right
-            anchors.verticalCenter: parent.verticalCenter
-            text: root.text || "Jot something down (Tab for Inbox)..."
+            width: parent.width
+            anchors.verticalCenter: captureFlickable.contentHeight <= captureFlickable.height ? parent.verticalCenter : undefined
+            text: root.text || "Jot something down..."
             textFormat: Text.PlainText
             color: root.foreground
             opacity: root.text ? 1 : 0.58
             font.family: root.fontFamily
-            font.pixelSize: Style.font.heading
+            font.pixelSize: 15
             wrapMode: Text.Wrap
+            lineHeight: 1.3
           }
+        }
+
+        // Subtext hint
+        Text {
+          anchors.right: parent.right
+          anchors.bottom: parent.bottom
+          text: "Tab for Inbox"
+          font.family: root.monoFamily
+          font.pixelSize: 10
+          color: root.foreground
+          opacity: 0.3
+          visible: !root.text
         }
       }
     }

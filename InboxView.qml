@@ -16,26 +16,25 @@ Item {
 
   property color foreground: Color.menu.text
   property color background: Color.menu.background
-  property color selectedBg: Color.menu.selectedBackground
-  property color selectedFg: Color.menu.selectedText
-  property color mutedText: "#71717A"
-  property color dividerColor: Qt.rgba(1, 1, 1, 0.07)
+  property color selectedBg: Qt.rgba(1, 1, 1, 0.08)
+  property color mutedText: Qt.rgba(foreground.r, foreground.g, foreground.b, 0.6)
+  property color dividerColor: Qt.rgba(1, 1, 1, 0.1)
   property color accentColor: Color.accent
   property string fontFamily: Style.font.menuFamily
   property string monoFamily: Style.font.monoFamily || "monospace"
 
-  readonly property int headerHeight: 42
-  readonly property int filterHeight: 34
-  readonly property int footerHeight: 34
-  readonly property int baseRowHeight: 38
+  readonly property int headerHeight: 40
+  readonly property int filterHeight: 36
+  readonly property int footerHeight: 32
+  readonly property int baseRowHeight: 40
   readonly property int maxListHeight: 320
 
   readonly property int calculatedListHeight: {
-    if (visibleIndices.length === 0) return 72
+    if (visibleIndices.length === 0) return 80
     var h = 0
     for (var i = 0; i < visibleIndices.length; i++) {
       var item = items[visibleIndices[i]]
-      if (item && item.extra) h += 52
+      if (item && item.extra) h += 54
       else h += baseRowHeight
       if (h >= maxListHeight) return maxListHeight
     }
@@ -106,7 +105,7 @@ Item {
     anchors.fill: parent
     spacing: 0
 
-    // --- HEADER -------------------------------------------------------------
+    // --- HEADER ---
     Item {
       width: parent.width
       height: root.headerHeight
@@ -114,26 +113,26 @@ Item {
       Row {
         anchors.left: parent.left
         anchors.verticalCenter: parent.verticalCenter
-        spacing: 10
+        spacing: 12
 
         Text {
           text: "INBOX"
           font.family: root.fontFamily
-          font.pixelSize: 12
+          font.pixelSize: 13
           font.weight: Font.DemiBold
-          font.letterSpacing: 1.5
+          font.letterSpacing: 1.0
           color: root.foreground
           anchors.verticalCenter: parent.verticalCenter
         }
 
         // Pending count chip
         Rectangle {
-          radius: 3
-          color: root.pendingCount > 0 ? Qt.rgba(59/255, 130/255, 246/255, 0.14) : Qt.rgba(1, 1, 1, 0.05)
+          radius: 4
+          color: root.pendingCount > 0 ? Qt.rgba(59/255, 130/255, 246/255, 0.15) : Qt.rgba(1, 1, 1, 0.08)
           border.width: 1
-          border.color: root.pendingCount > 0 ? Qt.rgba(59/255, 130/255, 246/255, 0.3) : root.dividerColor
+          border.color: root.pendingCount > 0 ? Qt.rgba(59/255, 130/255, 246/255, 0.3) : "transparent"
           height: 20
-          width: pendingText.implicitWidth + 10
+          width: pendingText.implicitWidth + 12
           anchors.verticalCenter: parent.verticalCenter
 
           Text {
@@ -146,28 +145,6 @@ Item {
             color: root.pendingCount > 0 ? "#60A5FA" : root.mutedText
           }
         }
-
-        // Done count chip
-        Rectangle {
-          visible: root.completedCount > 0
-          radius: 3
-          color: Qt.rgba(74/255, 222/255, 128/255, 0.12)
-          border.width: 1
-          border.color: Qt.rgba(74/255, 222/255, 128/255, 0.25)
-          height: 20
-          width: doneText.implicitWidth + 10
-          anchors.verticalCenter: parent.verticalCenter
-
-          Text {
-            id: doneText
-            anchors.centerIn: parent
-            text: root.completedCount + " DONE"
-            font.family: root.monoFamily
-            font.pixelSize: 10
-            font.weight: Font.Medium
-            color: "#4ADE80"
-          }
-        }
       }
 
       // Mode switch tab hint
@@ -175,10 +152,10 @@ Item {
         anchors.right: parent.right
         anchors.verticalCenter: parent.verticalCenter
         height: 22
-        radius: 3
-        color: tabHover.hovered ? Qt.rgba(1, 1, 1, 0.09) : Qt.rgba(1, 1, 1, 0.05)
+        radius: 4
+        color: tabHover.hovered ? Qt.rgba(1, 1, 1, 0.1) : "transparent"
         border.width: 1
-        border.color: root.dividerColor
+        border.color: tabHover.hovered ? root.dividerColor : "transparent"
         width: tabHintText.implicitWidth + 12
 
         Text {
@@ -208,16 +185,16 @@ Item {
       }
     }
 
-    // --- SEARCH / FILTER BAR ------------------------------------------------
+    // --- SEARCH / FILTER BAR ---
     Item {
       width: parent.width
       height: root.filterHeight
 
       Row {
         anchors.fill: parent
-        anchors.leftMargin: 2
-        anchors.rightMargin: 2
-        spacing: 8
+        anchors.leftMargin: 4
+        anchors.rightMargin: 4
+        spacing: 10
 
         Text {
           text: "/"
@@ -233,7 +210,7 @@ Item {
           anchors.verticalCenter: parent.verticalCenter
           width: parent.width - 24
           font.family: root.fontFamily
-          font.pixelSize: 12
+          font.pixelSize: 13
           color: root.foreground
           clip: true
           text: root.filterQuery
@@ -246,11 +223,11 @@ Item {
 
           Text {
             anchors.fill: parent
-            text: "Filter notes (press / to focus)..."
+            text: "Filter notes..."
             font.family: root.fontFamily
-            font.pixelSize: 12
+            font.pixelSize: 13
             color: root.mutedText
-            opacity: 0.5
+            opacity: 0.6
             visible: !searchInput.text && !searchInput.activeFocus
           }
 
@@ -274,7 +251,7 @@ Item {
       }
     }
 
-    // --- LIST VIEW CONTAINER ------------------------------------------------
+    // --- LIST VIEW CONTAINER ---
     Item {
       width: parent.width
       height: root.calculatedListHeight
@@ -351,19 +328,19 @@ Item {
 
         Column {
           anchors.centerIn: parent
-          spacing: 4
+          spacing: 6
 
           Text {
             anchors.horizontalCenter: parent.horizontalCenter
-            text: root.items.length === 0 ? "No notes in inbox." : "No matching notes."
+            text: root.items.length === 0 ? "Inbox zero." : "No matching notes."
             font.family: root.fontFamily
-            font.pixelSize: 13
+            font.pixelSize: 14
             color: root.mutedText
           }
 
           Text {
             anchors.horizontalCenter: parent.horizontalCenter
-            text: "Press 'a' or [Tab] to capture a thought."
+            text: "Press [Tab] to capture."
             font.family: root.monoFamily
             font.pixelSize: 11
             color: root.mutedText
@@ -376,8 +353,8 @@ Item {
       ListView {
         id: listView
         anchors.fill: parent
-        anchors.topMargin: 2
-        anchors.bottomMargin: 2
+        anchors.topMargin: 4
+        anchors.bottomMargin: 4
         spacing: 2
         model: root.visibleIndices
         currentIndex: root.selectedIndex
@@ -390,23 +367,12 @@ Item {
           readonly property bool isSelected: index === root.selectedIndex
           readonly property bool isRowEditing: root.isEditing && isSelected
 
-          height: isRowEditing ? 40 : (noteItem.extra ? 50 : root.baseRowHeight)
+          height: isRowEditing ? 40 : (noteItem.extra ? 54 : root.baseRowHeight)
 
           Rectangle {
             anchors.fill: parent
-            radius: 4
-            color: isSelected ? Qt.rgba(1, 1, 1, 0.06) : (rowHover.hovered ? Qt.rgba(1, 1, 1, 0.02) : "transparent")
-
-            Rectangle {
-              anchors.left: parent.left
-              anchors.top: parent.top
-              anchors.bottom: parent.bottom
-              anchors.margins: 4
-              width: 2
-              radius: 1
-              color: root.accentColor
-              visible: isSelected
-            }
+            radius: 6
+            color: isSelected ? root.selectedBg : (rowHover.hovered ? Qt.rgba(1, 1, 1, 0.04) : "transparent")
           }
 
           MouseArea {
@@ -425,19 +391,19 @@ Item {
 
           Item {
             anchors.fill: parent
-            anchors.leftMargin: 8
-            anchors.rightMargin: 8
+            anchors.leftMargin: 10
+            anchors.rightMargin: 10
             visible: !isRowEditing
 
             // Checkbox
             Rectangle {
               id: checkbox
-              width: 15
-              height: 15
-              radius: 3
+              width: 16
+              height: 16
+              radius: 4
               anchors.left: parent.left
               anchors.verticalCenter: parent.verticalCenter
-              color: noteItem.checked ? Qt.rgba(74/255, 222/255, 128/255, 0.18) : "transparent"
+              color: noteItem.checked ? Qt.rgba(74/255, 222/255, 128/255, 0.2) : "transparent"
               border.width: 1
               border.color: noteItem.checked ? "#4ADE80" : root.mutedText
 
@@ -457,12 +423,12 @@ Item {
               }
             }
 
-            // Right Meta (Timestamp + Action pills)
+            // Right Meta
             Row {
               id: rightMeta
               anchors.right: parent.right
               anchors.verticalCenter: parent.verticalCenter
-              spacing: 8
+              spacing: 10
 
               Text {
                 text: noteItem.displayTime || noteItem.timestamp || ""
@@ -475,14 +441,14 @@ Item {
 
               Row {
                 anchors.verticalCenter: parent.verticalCenter
-                spacing: 4
+                spacing: 6
                 visible: isSelected
 
                 Rectangle {
-                  height: 18
-                  radius: 3
-                  color: Qt.rgba(1, 1, 1, 0.08)
-                  width: editHint.implicitWidth + 8
+                  height: 20
+                  radius: 4
+                  color: Qt.rgba(1, 1, 1, 0.1)
+                  width: editHint.implicitWidth + 12
                   Text {
                     id: editHint
                     anchors.centerIn: parent
@@ -499,10 +465,10 @@ Item {
                 }
 
                 Rectangle {
-                  height: 18
-                  radius: 3
+                  height: 20
+                  radius: 4
                   color: Qt.rgba(239/255, 68/255, 68/255, 0.15)
-                  width: delHint.implicitWidth + 8
+                  width: delHint.implicitWidth + 12
                   Text {
                     id: delHint
                     anchors.centerIn: parent
@@ -523,20 +489,20 @@ Item {
             // Note Text
             Column {
               anchors.left: checkbox.right
-              anchors.leftMargin: 10
+              anchors.leftMargin: 12
               anchors.right: rightMeta.left
-              anchors.rightMargin: 10
+              anchors.rightMargin: 12
               anchors.verticalCenter: parent.verticalCenter
-              spacing: 1
+              spacing: 2
 
               Text {
                 width: parent.width
                 text: noteItem.text || ""
                 font.family: root.fontFamily
-                font.pixelSize: 13
+                font.pixelSize: 14
                 font.strikeout: Boolean(noteItem.checked)
                 color: noteItem.checked ? root.mutedText : root.foreground
-                opacity: noteItem.checked ? 0.45 : 1.0
+                opacity: noteItem.checked ? 0.5 : 1.0
                 elide: Text.ElideRight
                 textFormat: Text.PlainText
               }
@@ -545,10 +511,10 @@ Item {
                 width: parent.width
                 text: noteItem.extra || ""
                 font.family: root.fontFamily
-                font.pixelSize: 11
+                font.pixelSize: 12
                 font.strikeout: Boolean(noteItem.checked)
                 color: root.mutedText
-                opacity: noteItem.checked ? 0.35 : 0.7
+                opacity: noteItem.checked ? 0.4 : 0.8
                 elide: Text.ElideRight
                 visible: Boolean(noteItem.extra)
                 textFormat: Text.PlainText
@@ -561,7 +527,7 @@ Item {
             anchors.fill: parent
             anchors.margins: 2
             radius: 4
-            color: Qt.rgba(1, 1, 1, 0.08)
+            color: Qt.rgba(1, 1, 1, 0.1)
             border.width: 1
             border.color: root.accentColor
             visible: isRowEditing
@@ -569,11 +535,11 @@ Item {
             TextInput {
               id: editField
               anchors.fill: parent
-              anchors.leftMargin: 8
-              anchors.rightMargin: 8
+              anchors.leftMargin: 10
+              anchors.rightMargin: 10
               verticalAlignment: TextInput.AlignVCenter
               font.family: root.fontFamily
-              font.pixelSize: 13
+              font.pixelSize: 14
               color: root.foreground
               clip: true
               text: noteItem.text || ""
@@ -603,7 +569,7 @@ Item {
       }
     }
 
-    // --- FOOTER HUD ---------------------------------------------------------
+    // --- FOOTER HUD ---
     Item {
       width: parent.width
       height: root.footerHeight
@@ -615,82 +581,54 @@ Item {
         color: root.dividerColor
       }
 
-      Row {
-        anchors.left: parent.left
-        anchors.verticalCenter: parent.verticalCenter
-        spacing: 8
+      Item {
+        anchors.fill: parent
+        anchors.leftMargin: 2
+        anchors.rightMargin: 2
 
         Row {
-          spacing: 3
+          anchors.left: parent.left
           anchors.verticalCenter: parent.verticalCenter
-          Rectangle {
-            height: 16; width: 24; radius: 3; color: Qt.rgba(1,1,1,0.06); border.width: 1; border.color: root.dividerColor
-            Text { anchors.centerIn: parent; text: "j/k"; font.family: root.monoFamily; font.pixelSize: 9; color: root.mutedText }
-          }
-          Text { anchors.verticalCenter: parent.verticalCenter; text: "nav"; font.family: root.monoFamily; font.pixelSize: 10; color: root.mutedText }
-        }
+          spacing: 12
 
-        Row {
-          spacing: 3
-          anchors.verticalCenter: parent.verticalCenter
-          Rectangle {
-            height: 16; width: 34; radius: 3; color: Qt.rgba(1,1,1,0.06); border.width: 1; border.color: root.dividerColor
-            Text { anchors.centerIn: parent; text: "space"; font.family: root.monoFamily; font.pixelSize: 9; color: root.mutedText }
+          Row {
+            spacing: 4; anchors.verticalCenter: parent.verticalCenter
+            Rectangle { height: 18; width: kbdNav.implicitWidth+8; radius:3; color: Qt.rgba(1,1,1,0.1); Text { id: kbdNav; anchors.centerIn: parent; text: "j/k"; font.family: root.monoFamily; font.pixelSize: 10; color: root.mutedText } }
+            Text { text: "nav"; font.family: root.fontFamily; font.pixelSize: 11; color: root.mutedText; anchors.verticalCenter: parent.verticalCenter }
           }
-          Text { anchors.verticalCenter: parent.verticalCenter; text: "done"; font.family: root.monoFamily; font.pixelSize: 10; color: root.mutedText }
-        }
-
-        Row {
-          spacing: 3
-          anchors.verticalCenter: parent.verticalCenter
-          Rectangle {
-            height: 16; width: 14; radius: 3; color: Qt.rgba(1,1,1,0.06); border.width: 1; border.color: root.dividerColor
-            Text { anchors.centerIn: parent; text: "e"; font.family: root.monoFamily; font.pixelSize: 9; color: root.mutedText }
+          Row {
+            spacing: 4; anchors.verticalCenter: parent.verticalCenter
+            Rectangle { height: 18; width: kbdDone.implicitWidth+8; radius:3; color: Qt.rgba(1,1,1,0.1); Text { id: kbdDone; anchors.centerIn: parent; text: "spc"; font.family: root.monoFamily; font.pixelSize: 10; color: root.mutedText } }
+            Text { text: "done"; font.family: root.fontFamily; font.pixelSize: 11; color: root.mutedText; anchors.verticalCenter: parent.verticalCenter }
           }
-          Text { anchors.verticalCenter: parent.verticalCenter; text: "edit"; font.family: root.monoFamily; font.pixelSize: 10; color: root.mutedText }
+          Row {
+            spacing: 4; anchors.verticalCenter: parent.verticalCenter
+            Rectangle { height: 18; width: kbdEdit.implicitWidth+8; radius:3; color: Qt.rgba(1,1,1,0.1); Text { id: kbdEdit; anchors.centerIn: parent; text: "e"; font.family: root.monoFamily; font.pixelSize: 10; color: root.mutedText } }
+            Text { text: "edit"; font.family: root.fontFamily; font.pixelSize: 11; color: root.mutedText; anchors.verticalCenter: parent.verticalCenter }
+          }
         }
 
         Row {
-          spacing: 3
+          anchors.right: parent.right
           anchors.verticalCenter: parent.verticalCenter
-          Rectangle {
-            height: 16; width: 14; radius: 3; color: Qt.rgba(1,1,1,0.06); border.width: 1; border.color: root.dividerColor
-            Text { anchors.centerIn: parent; text: "d"; font.family: root.monoFamily; font.pixelSize: 9; color: root.mutedText }
+          spacing: 12
+          
+          Row {
+            spacing: 4; anchors.verticalCenter: parent.verticalCenter
+            Rectangle { height: 18; width: kbdDel.implicitWidth+8; radius:3; color: Qt.rgba(1,1,1,0.1); Text { id: kbdDel; anchors.centerIn: parent; text: "d"; font.family: root.monoFamily; font.pixelSize: 10; color: root.mutedText } }
+            Text { text: "del"; font.family: root.fontFamily; font.pixelSize: 11; color: root.mutedText; anchors.verticalCenter: parent.verticalCenter }
           }
-          Text { anchors.verticalCenter: parent.verticalCenter; text: "del"; font.family: root.monoFamily; font.pixelSize: 10; color: root.mutedText }
-        }
-
-        Row {
-          spacing: 3
-          anchors.verticalCenter: parent.verticalCenter
-          Rectangle {
-            height: 16; width: 14; radius: 3; color: Qt.rgba(1,1,1,0.06); border.width: 1; border.color: root.dividerColor
-            Text { anchors.centerIn: parent; text: "a"; font.family: root.monoFamily; font.pixelSize: 9; color: root.mutedText }
+          Row {
+            spacing: 4; anchors.verticalCenter: parent.verticalCenter
+            Rectangle { height: 18; width: kbdNew.implicitWidth+8; radius:3; color: Qt.rgba(1,1,1,0.1); Text { id: kbdNew; anchors.centerIn: parent; text: "a"; font.family: root.monoFamily; font.pixelSize: 10; color: root.mutedText } }
+            Text { text: "new"; font.family: root.fontFamily; font.pixelSize: 11; color: root.mutedText; anchors.verticalCenter: parent.verticalCenter }
           }
-          Text { anchors.verticalCenter: parent.verticalCenter; text: "new"; font.family: root.monoFamily; font.pixelSize: 10; color: root.mutedText }
-        }
-
-        Row {
-          spacing: 3
-          anchors.verticalCenter: parent.verticalCenter
-          Rectangle {
-            height: 16; width: 14; radius: 3; color: Qt.rgba(1,1,1,0.06); border.width: 1; border.color: root.dividerColor
-            Text { anchors.centerIn: parent; text: "/"; font.family: root.monoFamily; font.pixelSize: 9; color: root.mutedText }
+          Row {
+            spacing: 4; anchors.verticalCenter: parent.verticalCenter
+            Rectangle { height: 18; width: kbdClose.implicitWidth+8; radius:3; color: Qt.rgba(1,1,1,0.1); Text { id: kbdClose; anchors.centerIn: parent; text: "esc"; font.family: root.monoFamily; font.pixelSize: 10; color: root.mutedText } }
+            Text { text: "close"; font.family: root.fontFamily; font.pixelSize: 11; color: root.mutedText; anchors.verticalCenter: parent.verticalCenter }
           }
-          Text { anchors.verticalCenter: parent.verticalCenter; text: "find"; font.family: root.monoFamily; font.pixelSize: 10; color: root.mutedText }
         }
-      }
-
-      Row {
-        anchors.right: parent.right
-        anchors.verticalCenter: parent.verticalCenter
-        spacing: 3
-
-        Rectangle {
-          height: 16; width: 24; radius: 3; color: Qt.rgba(1,1,1,0.06); border.width: 1; border.color: root.dividerColor
-          Text { anchors.centerIn: parent; text: "esc"; font.family: root.monoFamily; font.pixelSize: 9; color: root.mutedText }
-        }
-        Text { anchors.verticalCenter: parent.verticalCenter; text: "close"; font.family: root.monoFamily; font.pixelSize: 10; color: root.mutedText }
       }
     }
   }
