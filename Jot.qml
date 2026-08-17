@@ -25,10 +25,12 @@ Item {
   property string monoFamily: Style.font.monoFamily || "monospace"
   property color background: Color.menu.background
   property color foreground: Color.menu.text
-  // Accent, not menu.border: themes point menu.border at the neutral
-  // active-border-foreground, which reads as a plain white outline.
   property color borderColor: Color.accent
-  property var borderSpec: Border.surfaceSpec("menu", "border", borderColor, Math.max(1, Style.space(1)))
+  // hyprlandActiveSpec, not surfaceSpec("menu", ...): themes set menu.border to
+  // the neutral active-border-foreground, and surfaceSpec only falls back to the
+  // color passed in when the theme leaves the token unset. This tracks the
+  // Hyprland active-window border instead, so the card matches the focus color.
+  property var borderSpec: Border.hyprlandActiveSpec(borderColor, Math.max(1, Style.space(1)))
   property color scrim: Color.menu.scrim
   readonly property int cornerRadius: 8
   property int contentMargin: 16
