@@ -16,9 +16,9 @@ Item {
 
   property color foreground: Color.menu.text
   property color background: Color.menu.background
-  property color selectedBg: Qt.rgba(1, 1, 1, 0.08)
+  property color selectedBg: Color.menu.selectedBackground
   property color mutedText: Qt.rgba(foreground.r, foreground.g, foreground.b, 0.6)
-  property color dividerColor: Qt.rgba(1, 1, 1, 0.1)
+  property color dividerColor: Util.alpha(root.foreground, 0.1)
   property color accentColor: Color.accent
   property string fontFamily: Style.font.menuFamily
   property string monoFamily: Style.font.monoFamily || "monospace"
@@ -127,9 +127,9 @@ Item {
         // Pending count chip
         Rectangle {
           radius: 4
-          color: root.pendingCount > 0 ? Qt.rgba(59/255, 130/255, 246/255, 0.15) : Qt.rgba(1, 1, 1, 0.08)
+          color: root.pendingCount > 0 ? Util.alpha(root.accentColor, 0.15) : Util.alpha(root.foreground, 0.08)
           border.width: 1
-          border.color: root.pendingCount > 0 ? Qt.rgba(59/255, 130/255, 246/255, 0.3) : "transparent"
+          border.color: root.pendingCount > 0 ? Util.alpha(root.accentColor, 0.3) : "transparent"
           height: 20
           width: pendingText.implicitWidth + 12
           anchors.verticalCenter: parent.verticalCenter
@@ -141,7 +141,7 @@ Item {
             font.family: root.monoFamily
             font.pixelSize: 10
             font.weight: Font.Medium
-            color: root.pendingCount > 0 ? "#60A5FA" : root.mutedText
+            color: root.pendingCount > 0 ? root.accentColor : root.mutedText
           }
         }
       }
@@ -152,7 +152,7 @@ Item {
         anchors.verticalCenter: parent.verticalCenter
         height: 22
         radius: 4
-        color: tabHover.hovered ? Qt.rgba(1, 1, 1, 0.1) : "transparent"
+        color: tabHover.hovered ? Util.alpha(root.foreground, 0.1) : "transparent"
         border.width: 1
         border.color: tabHover.hovered ? root.dividerColor : "transparent"
         width: tabHintText.implicitWidth + 12
@@ -371,7 +371,7 @@ Item {
           Rectangle {
             anchors.fill: parent
             radius: 6
-            color: isSelected ? root.selectedBg : (rowHover.hovered ? Qt.rgba(1, 1, 1, 0.04) : "transparent")
+            color: isSelected ? root.selectedBg : (rowHover.hovered ? Util.alpha(root.foreground, 0.04) : "transparent")
           }
 
           MouseArea {
@@ -402,16 +402,16 @@ Item {
               radius: 4
               anchors.left: parent.left
               anchors.verticalCenter: parent.verticalCenter
-              color: noteItem.checked ? Qt.rgba(74/255, 222/255, 128/255, 0.2) : "transparent"
+              color: noteItem.checked ? Util.alpha(root.accentColor, 0.2) : "transparent"
               border.width: 1
-              border.color: noteItem.checked ? "#4ADE80" : root.mutedText
+              border.color: noteItem.checked ? root.accentColor : root.mutedText
 
               Text {
                 anchors.centerIn: parent
                 text: "✓"
                 font.pixelSize: 10
                 font.weight: Font.Bold
-                color: "#4ADE80"
+                color: root.accentColor
                 visible: noteItem.checked
               }
 
@@ -446,7 +446,7 @@ Item {
                 Rectangle {
                   height: 20
                   radius: 4
-                  color: Qt.rgba(1, 1, 1, 0.1)
+                  color: Util.alpha(root.foreground, 0.1)
                   width: editHint.implicitWidth + 12
                   Text {
                     id: editHint
@@ -466,7 +466,7 @@ Item {
                 Rectangle {
                   height: 20
                   radius: 4
-                  color: Qt.rgba(239/255, 68/255, 68/255, 0.15)
+                  color: Util.alpha(Color.urgent, 0.15)
                   width: delHint.implicitWidth + 12
                   Text {
                     id: delHint
@@ -474,7 +474,7 @@ Item {
                     text: "[d] del"
                     font.family: root.monoFamily
                     font.pixelSize: 10
-                    color: "#EF4444"
+                    color: Color.urgent
                   }
                   MouseArea {
                     anchors.fill: parent
@@ -526,7 +526,7 @@ Item {
             anchors.fill: parent
             anchors.margins: 2
             radius: 4
-            color: Qt.rgba(1, 1, 1, 0.1)
+            color: Util.alpha(root.foreground, 0.1)
             border.width: 1
             border.color: root.accentColor
             visible: isRowEditing
@@ -592,17 +592,17 @@ Item {
 
           Row {
             spacing: 4; anchors.verticalCenter: parent.verticalCenter
-            Rectangle { height: 18; width: kbdNav.implicitWidth+8; radius:3; color: Qt.rgba(1,1,1,0.1); Text { id: kbdNav; anchors.centerIn: parent; text: "j/k"; font.family: root.monoFamily; font.pixelSize: 10; color: root.mutedText } }
+            Rectangle { height: 18; width: kbdNav.implicitWidth+8; radius:3; color: Util.alpha(root.foreground, 0.1); Text { id: kbdNav; anchors.centerIn: parent; text: "j/k"; font.family: root.monoFamily; font.pixelSize: 10; color: root.mutedText } }
             Text { text: "nav"; font.family: root.fontFamily; font.pixelSize: 11; color: root.mutedText; anchors.verticalCenter: parent.verticalCenter }
           }
           Row {
             spacing: 4; anchors.verticalCenter: parent.verticalCenter
-            Rectangle { height: 18; width: kbdDone.implicitWidth+8; radius:3; color: Qt.rgba(1,1,1,0.1); Text { id: kbdDone; anchors.centerIn: parent; text: "spc"; font.family: root.monoFamily; font.pixelSize: 10; color: root.mutedText } }
+            Rectangle { height: 18; width: kbdDone.implicitWidth+8; radius:3; color: Util.alpha(root.foreground, 0.1); Text { id: kbdDone; anchors.centerIn: parent; text: "spc"; font.family: root.monoFamily; font.pixelSize: 10; color: root.mutedText } }
             Text { text: "done"; font.family: root.fontFamily; font.pixelSize: 11; color: root.mutedText; anchors.verticalCenter: parent.verticalCenter }
           }
           Row {
             spacing: 4; anchors.verticalCenter: parent.verticalCenter
-            Rectangle { height: 18; width: kbdEdit.implicitWidth+8; radius:3; color: Qt.rgba(1,1,1,0.1); Text { id: kbdEdit; anchors.centerIn: parent; text: "e"; font.family: root.monoFamily; font.pixelSize: 10; color: root.mutedText } }
+            Rectangle { height: 18; width: kbdEdit.implicitWidth+8; radius:3; color: Util.alpha(root.foreground, 0.1); Text { id: kbdEdit; anchors.centerIn: parent; text: "e"; font.family: root.monoFamily; font.pixelSize: 10; color: root.mutedText } }
             Text { text: "edit"; font.family: root.fontFamily; font.pixelSize: 11; color: root.mutedText; anchors.verticalCenter: parent.verticalCenter }
           }
         }
@@ -614,17 +614,17 @@ Item {
           
           Row {
             spacing: 4; anchors.verticalCenter: parent.verticalCenter
-            Rectangle { height: 18; width: kbdDel.implicitWidth+8; radius:3; color: Qt.rgba(1,1,1,0.1); Text { id: kbdDel; anchors.centerIn: parent; text: "d"; font.family: root.monoFamily; font.pixelSize: 10; color: root.mutedText } }
+            Rectangle { height: 18; width: kbdDel.implicitWidth+8; radius:3; color: Util.alpha(root.foreground, 0.1); Text { id: kbdDel; anchors.centerIn: parent; text: "d"; font.family: root.monoFamily; font.pixelSize: 10; color: root.mutedText } }
             Text { text: "del"; font.family: root.fontFamily; font.pixelSize: 11; color: root.mutedText; anchors.verticalCenter: parent.verticalCenter }
           }
           Row {
             spacing: 4; anchors.verticalCenter: parent.verticalCenter
-            Rectangle { height: 18; width: kbdNew.implicitWidth+8; radius:3; color: Qt.rgba(1,1,1,0.1); Text { id: kbdNew; anchors.centerIn: parent; text: "a"; font.family: root.monoFamily; font.pixelSize: 10; color: root.mutedText } }
+            Rectangle { height: 18; width: kbdNew.implicitWidth+8; radius:3; color: Util.alpha(root.foreground, 0.1); Text { id: kbdNew; anchors.centerIn: parent; text: "a"; font.family: root.monoFamily; font.pixelSize: 10; color: root.mutedText } }
             Text { text: "new"; font.family: root.fontFamily; font.pixelSize: 11; color: root.mutedText; anchors.verticalCenter: parent.verticalCenter }
           }
           Row {
             spacing: 4; anchors.verticalCenter: parent.verticalCenter
-            Rectangle { height: 18; width: kbdClose.implicitWidth+8; radius:3; color: Qt.rgba(1,1,1,0.1); Text { id: kbdClose; anchors.centerIn: parent; text: "esc"; font.family: root.monoFamily; font.pixelSize: 10; color: root.mutedText } }
+            Rectangle { height: 18; width: kbdClose.implicitWidth+8; radius:3; color: Util.alpha(root.foreground, 0.1); Text { id: kbdClose; anchors.centerIn: parent; text: "esc"; font.family: root.monoFamily; font.pixelSize: 10; color: root.mutedText } }
             Text { text: "close"; font.family: root.fontFamily; font.pixelSize: 11; color: root.mutedText; anchors.verticalCenter: parent.verticalCenter }
           }
         }
