@@ -2,6 +2,14 @@
 
 A utilitarian minimalist quick capture and interactive inbox overlay for [Omarchy](https://omarchy.org).
 
+Quick capture — one line, straight into your inbox file:
+
+![Jot quick capture overlay](docs/capture.png)
+
+Interactive inbox — check off, edit, delete, filter. Colors follow the active Omarchy theme:
+
+![Jot interactive inbox](docs/inbox.png)
+
 ---
 
 ## Features
@@ -25,7 +33,7 @@ A utilitarian minimalist quick capture and interactive inbox overlay for [Omarch
 
 ```bash
 # Clone and install into Omarchy plugins
-omarchy plugin add https://github.com/<your-user>/jot.git --enable
+omarchy plugin add https://github.com/barun-labs/jot.git --enable
 
 # Set up keybindings
 jot bind-key
