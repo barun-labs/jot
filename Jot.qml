@@ -25,7 +25,9 @@ Item {
   property string monoFamily: Style.font.monoFamily || "monospace"
   property color background: Color.menu.background
   property color foreground: Color.menu.text
-  property color borderColor: Color.menu.border
+  // Accent, not menu.border: themes point menu.border at the neutral
+  // active-border-foreground, which reads as a plain white outline.
+  property color borderColor: Color.accent
   property var borderSpec: Border.surfaceSpec("menu", "border", borderColor, Math.max(1, Style.space(1)))
   property color scrim: Color.menu.scrim
   readonly property int cornerRadius: 8
