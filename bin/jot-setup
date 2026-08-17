@@ -1,0 +1,19 @@
+#!/usr/bin/env bash
+# jot-setup — one-time setup for lun.jot
+set -euo pipefail
+
+SCRIPT="$(readlink -f "${BASH_SOURCE[0]}")"
+PLUGIN_DIR="$(dirname "$(dirname "$SCRIPT")")"
+BIN_DIR="${JOT_BIN_DIR:-$HOME/.local/bin}"
+
+mkdir -p "$HOME/.config/jot" "$BIN_DIR"
+ln -sfn "$PLUGIN_DIR/bin/jot" "$BIN_DIR/jot"
+
+if [[ ! -e "$HOME/.config/jot/config.json" ]]; then
+  cat >"$HOME/.config/jot/config.json" <<'EOF'
+{
+  "file": "~/notes/inbox.md",
+  "template": "- [ ] %Y-%m-%d %H:%M {text}"
+}
+EOF
+fi

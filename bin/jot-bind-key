@@ -1,0 +1,28 @@
+#!/usr/bin/env bash
+# jot-bind-key — configure SUPER+N (Capture) and SUPER+ALT+N (Inbox Popup) in Hyprland
+set -u
+
+BINDINGS="$HOME/.config/hypr/bindings.lua"
+
+say() {
+  command -v omarchy-notification-send >/dev/null 2>&1 &&
+    omarchy-notification-send "$1" "$2" || true
+  [[ -t 1 ]] && printf '%s\n' "$2"
+  return 0
+}
+
+# Remove existing jot block if present
+if grep -q '>>> jot >>>' "$BINDINGS" 2>/dev/null; then
+  sed -i '/-- >>> jot >>>/,/-- <<< jot <<</d' "$BINDINGS" 2>/dev/null || true
+fi
+
+cat >>"$BINDINGS" <<'EOF'
+
+-- >>> jot >>>  Added by lun.jot — yours to edit or remove.
+o.bind("SUPER + N", "Jot Capture", "omarchy-shell shell toggle lun.jot '{\"mode\":\"capture\"}'")
+o.bind("SUPER + ALT + N", "Jot Inbox", "omarchy-shell shell toggle lun.jot '{\"mode\":\"inbox\"}'")
+-- <<< jot <<<
+EOF
+
+hyprctl reload >/dev/null 2>&1 || true
+say "Jot Keybindings Configured" "SUPER+N opens Capture, SUPER+ALT+N opens Inbox."

@@ -1,0 +1,25 @@
+#!/usr/bin/env bash
+# jot-config — resolve Jot's config path and template
+set -u
+
+CONFIG="$HOME/.config/jot/config.json"
+DEFAULT_FILE="$HOME/notes/inbox.md"
+DEFAULT_TEMPLATE='- [ ] %Y-%m-%d %H:%M {text}'
+
+file="" template=""
+if [[ -f $CONFIG ]]; then
+  if jq -e . "$CONFIG" >/dev/null 2>&1; then
+    file="$(jq -r '.file? // empty | strings' "$CONFIG" 2>/dev/null)"
+    template="$(jq -r '.template? // empty | strings' "$CONFIG" 2>/dev/null)"
+  fi
+fi
+
+file=${file%%$'\n'*}
+template=${template%%$'\n'*}
+
+[[ -n $file ]] || file="$DEFAULT_FILE"
+[[ -n $template ]] || template="$DEFAULT_TEMPLATE"
+file="${file/#\~/$HOME}"
+[[ $file == /* ]] || file="$HOME/$file"
+
+printf '%s\n%s\n' "$file" "$template"

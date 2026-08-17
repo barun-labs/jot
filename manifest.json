@@ -1,0 +1,12 @@
+{
+  "schemaVersion": 1,
+  "id": "lun.jot",
+  "name": "Jot",
+  "version": "2.0.0",
+  "author": "lun",
+  "license": "MIT",
+  "description": "Minimalist quick capture & interactive inbox manager for Omarchy",
+  "kinds": ["overlay"],
+  "keepLoaded": true,
+  "entryPoints": { "overlay": "Jot.qml" }
+}

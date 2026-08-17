@@ -1,0 +1,31 @@
+#!/usr/bin/env bash
+# jot — the CLI interface for the lun.jot plugin
+set -euo pipefail
+
+SCRIPT="$(readlink -f "${BASH_SOURCE[0]}")"
+HERE="$(dirname "$SCRIPT")"
+
+usage() {
+  cat <<'USAGE'
+Usage:
+  jot                       open the quick capture overlay
+  jot inbox                 open the interactive inbox popup
+  jot editor                open your inbox file in the Omarchy editor
+  jot bind-key              bind SUPER+N (capture) and SUPER+ALT+N (inbox)
+  jot setup [--force]       re-run setup
+  jot uninstall [--purge]   remove Jot plugin
+USAGE
+}
+
+cmd="${1:-}"
+(($# > 0)) && shift
+case "$cmd" in
+  "") exec omarchy-shell shell toggle lun.jot '{"mode":"capture"}' ;;
+  -h|--help) usage; exit 0 ;;
+  inbox) exec omarchy-shell shell toggle lun.jot '{"mode":"inbox"}' ;;
+  editor|edit|nvim) exec "$HERE/jot-open-inbox" ;;
+  bind-key) exec "$HERE/jot-bind-key" ;;
+  setup) exec "$HERE/jot-setup" "$@" ;;
+  uninstall) exec "$HERE/jot-uninstall" "$@" ;;
+  *) echo "jot: unknown command: $cmd" >&2; usage >&2; exit 1 ;;
+esac
