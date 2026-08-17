@@ -52,9 +52,9 @@ Item {
     root.inboxItems = InboxModel.parseInbox(raw)
   }
 
-  function saveInbox() {
-    var serialized = InboxModel.serializeInbox(root.inboxItems)
-    inboxFile.setText(serialized)
+  function saveInbox(items) {
+    root.inboxItems = items
+    inboxFile.setText(InboxModel.serializeInbox(items))
   }
 
   function open(payloadJson) {
@@ -202,7 +202,7 @@ Item {
         fontFamily: root.fontFamily
         monoFamily: root.monoFamily
 
-        onRequestSave: root.saveInbox()
+        onRequestSave: function(newItems) { root.saveInbox(newItems) }
         onRequestCapture: {
           root.mode = "capture"
           root.text = ""

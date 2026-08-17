@@ -43,7 +43,9 @@ Item {
 
   readonly property int preferredHeight: headerHeight + filterHeight + calculatedListHeight + footerHeight
 
-  signal requestSave()
+  // Carries the mutated list up: assigning root.items here would break the
+  // `items: root.inboxItems` binding and the change would never reach the file.
+  signal requestSave(var newItems)
   signal requestCapture()
   signal requestDismiss()
 
@@ -57,23 +59,20 @@ Item {
 
   function toggleDone(index) {
     if (index < 0 || index >= items.length) return
-    root.items = InboxModel.toggleItemAt(root.items, index)
-    root.requestSave()
+    root.requestSave(InboxModel.toggleItemAt(root.items, index))
   }
 
   function deleteItem(index) {
     if (index < 0 || index >= items.length) return
-    root.items = InboxModel.deleteItemAt(root.items, index)
+    root.requestSave(InboxModel.deleteItemAt(root.items, index))
     if (root.selectedIndex >= root.visibleIndices.length) {
       root.selectedIndex = Math.max(0, root.visibleIndices.length - 1)
     }
-    root.requestSave()
   }
 
   function commitEdit(index, newText) {
     if (index >= 0 && index < root.items.length) {
-      root.items = InboxModel.updateItemTextAt(root.items, index, newText)
-      root.requestSave()
+      root.requestSave(InboxModel.updateItemTextAt(root.items, index, newText))
     }
     root.isEditing = false
     Qt.callLater(function() { listKeyCatcher.forceActiveFocus() })
