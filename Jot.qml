@@ -26,21 +26,24 @@ Item {
   property color background: Color.menu.background
   property color foreground: Color.menu.text
   property color borderColor: Color.menu.border
-  property var borderSpec: Border.surfaceSpec("menu", "border", borderColor, Math.max(1, Style.space(2)))
+  property var borderSpec: Border.surfaceSpec("menu", "border", borderColor, Math.max(1, Style.space(1)))
   property color scrim: Color.menu.scrim
-  readonly property int cornerRadius: Style.cornerRadius
-  property int contentMargin: Style.spacing.panelPadding
+  readonly property int cornerRadius: 6
+  property int contentMargin: 12
 
   readonly property string inboxPath: Quickshell.env("HOME") + "/notes/inbox.md"
 
-  // Dynamic dimensions based on mode
-  readonly property int captureCardWidth: Math.min(Style.space(500), panel.width - Style.gapsOut * 2)
+  // Dynamic dimensions based on content and mode
+  readonly property int captureCardWidth: Math.min(480, panel.width - Style.gapsOut * 2)
   readonly property int captureCardHeight: Math.min(
-    contentMargin * 2 + Math.max(Style.space(34), contentText.contentHeight + Style.spacing.controlPaddingY * 2),
+    contentMargin * 2 + Math.max(34, contentText.contentHeight + 10),
     panel.height - Style.gapsOut * 2)
 
-  readonly property int inboxCardWidth: Math.min(Style.space(680), panel.width - Style.gapsOut * 2)
-  readonly property int inboxCardHeight: Math.min(Style.space(520), panel.height - Style.gapsOut * 2)
+  readonly property int inboxCardWidth: Math.min(560, panel.width - Style.gapsOut * 2)
+  readonly property int inboxCardHeight: Math.min(
+    Math.max(180, inboxView.preferredHeight + contentMargin * 2),
+    Math.min(480, panel.height - Style.gapsOut * 2)
+  )
 
   property int currentCardWidth: mode === "inbox" ? inboxCardWidth : captureCardWidth
   property int currentCardHeight: mode === "inbox" ? inboxCardHeight : captureCardHeight
@@ -122,7 +125,6 @@ Item {
       return
     }
 
-    // Append using script to maintain full template formatting
     Quickshell.execDetached([root.pluginDir + "/bin/jot-append", captured])
     root.dismiss()
   }
@@ -175,10 +177,10 @@ Item {
       padding: root.contentMargin
 
       Behavior on width {
-        NumberAnimation { duration: 160; easing.type: Easing.OutCubic }
+        NumberAnimation { duration: 140; easing.type: Easing.OutCubic }
       }
       Behavior on height {
-        NumberAnimation { duration: 160; easing.type: Easing.OutCubic }
+        NumberAnimation { duration: 140; easing.type: Easing.OutCubic }
       }
 
       MouseArea { anchors.fill: parent; onClicked: {} }
