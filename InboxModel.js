@@ -22,6 +22,7 @@ function parseInbox(raw) {
         id: items.length,
         checked: isChecked,
         timestamp: ts,
+        displayTime: formatDisplayTime(ts),
         text: content,
         extra: "",
         isTask: true,
@@ -39,6 +40,7 @@ function parseInbox(raw) {
         id: items.length,
         checked: false,
         timestamp: "",
+        displayTime: "",
         text: line,
         extra: "",
         isTask: false,
@@ -48,6 +50,34 @@ function parseInbox(raw) {
   }
   if (currentItem) items.push(currentItem);
   return items;
+}
+
+function formatDisplayTime(ts) {
+  if (!ts) return "";
+  var match = ts.match(/(?:(\d{4})-(\d{2})-(\d{2})\s+)?(\d{2}:\d{2})/);
+  if (!match) return ts;
+  var year = match[1];
+  var month = match[2];
+  var day = match[3];
+  var time = match[4];
+
+  if (!month || !day) return time;
+
+  var months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+  var mIdx = parseInt(month, 10) - 1;
+  var mName = (mIdx >= 0 && mIdx < 12) ? months[mIdx] : month;
+
+  var now = new Date();
+  var itemDate = new Date(parseInt(year || now.getFullYear(), 10), mIdx, parseInt(day, 10));
+
+  var isToday = now.getFullYear() === itemDate.getFullYear() &&
+                now.getMonth() === itemDate.getMonth() &&
+                now.getDate() === itemDate.getDate();
+
+  if (isToday) {
+    return time;
+  }
+  return mName + " " + parseInt(day, 10) + " " + time;
 }
 
 function serializeInbox(items) {
@@ -95,7 +125,6 @@ function deleteItemAt(items, index) {
   if (!items || index < 0 || index >= items.length) return items;
   var copy = items.slice();
   copy.splice(index, 1);
-  // re-index
   for (var i = 0; i < copy.length; i++) {
     copy[i].id = i;
   }
@@ -111,19 +140,6 @@ function formatCurrentTimestamp() {
   var hours = pad(d.getHours());
   var mins = pad(d.getMinutes());
   return year + "-" + month + "-" + day + " " + hours + ":" + mins;
-}
-
-function createNewItem(text, timestamp) {
-  var ts = timestamp !== undefined ? timestamp : formatCurrentTimestamp();
-  return {
-    id: 0,
-    checked: false,
-    timestamp: ts,
-    text: String(text || "").trim(),
-    extra: "",
-    isTask: true,
-    rawPrefix: "- [ ] "
-  };
 }
 
 function countPending(items) {

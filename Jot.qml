@@ -39,10 +39,10 @@ Item {
     contentMargin * 2 + Math.max(34, contentText.contentHeight + 10),
     panel.height - Style.gapsOut * 2)
 
-  readonly property int inboxCardWidth: Math.min(560, panel.width - Style.gapsOut * 2)
+  readonly property int inboxCardWidth: Math.min(540, panel.width - Style.gapsOut * 2)
   readonly property int inboxCardHeight: Math.min(
-    Math.max(180, inboxView.preferredHeight + contentMargin * 2),
-    Math.min(480, panel.height - Style.gapsOut * 2)
+    Math.max(170, inboxView.preferredHeight + contentMargin * 2),
+    Math.min(460, panel.height - Style.gapsOut * 2)
   )
 
   property int currentCardWidth: mode === "inbox" ? inboxCardWidth : captureCardWidth
@@ -177,10 +177,10 @@ Item {
       padding: root.contentMargin
 
       Behavior on width {
-        NumberAnimation { duration: 140; easing.type: Easing.OutCubic }
+        NumberAnimation { duration: 120; easing.type: Easing.OutCubic }
       }
       Behavior on height {
-        NumberAnimation { duration: 140; easing.type: Easing.OutCubic }
+        NumberAnimation { duration: 120; easing.type: Easing.OutCubic }
       }
 
       MouseArea { anchors.fill: parent; onClicked: {} }
