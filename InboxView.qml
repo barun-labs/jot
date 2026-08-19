@@ -13,6 +13,7 @@ Item {
   property int selectedIndex: 0
   property bool isEditing: false
   property string filterQuery: ""
+  property bool newestFirst: true
 
   property color foreground: Color.menu.text
   property color background: Color.menu.background
@@ -94,6 +95,8 @@ Item {
         if (text.indexOf(query) !== -1) list.push(i)
       }
     }
+    // Newest entries live at the bottom of inbox.md; reverse so they list first.
+    if (root.newestFirst) list.reverse()
     return list
   }
 
@@ -272,6 +275,8 @@ Item {
           var isDelete = (key === Qt.Key_D || key === Qt.Key_Delete || key === Qt.Key_Backspace)
           var isNew = (key === Qt.Key_A || key === Qt.Key_Tab)
           var isSearch = (key === Qt.Key_Slash)
+          var isSort = (key === Qt.Key_S)
+          var isCopy = (key === Qt.Key_C)
 
           if (isDown) {
             if (root.visibleIndices.length > 0) {
@@ -307,6 +312,18 @@ Item {
             event.accepted = true
           } else if (isSearch) {
             searchInput.forceActiveFocus()
+            event.accepted = true
+          } else if (isCopy) {
+            if (root.visibleIndices.length > 0) {
+              var copyItem = root.items[root.visibleIndices[root.selectedIndex]]
+              var copyText = copyItem.text + (copyItem.extra ? "\n" + copyItem.extra : "")
+              Quickshell.execDetached(["wl-copy", copyText])
+            }
+            event.accepted = true
+          } else if (isSort) {
+            root.newestFirst = !root.newestFirst
+            root.selectedIndex = Math.max(0, root.visibleIndices.length - 1 - root.selectedIndex)
+            listView.positionViewAtIndex(root.selectedIndex, ListView.Contain)
             event.accepted = true
           } else if (key === Qt.Key_Escape) {
             if (root.filterQuery) {
@@ -602,8 +619,8 @@ Item {
           }
           Row {
             spacing: 4; anchors.verticalCenter: parent.verticalCenter
-            Rectangle { height: 18; width: kbdEdit.implicitWidth+8; radius:3; color: Util.alpha(root.foreground, 0.1); Text { id: kbdEdit; anchors.centerIn: parent; text: "e"; font.family: root.monoFamily; font.pixelSize: 10; color: root.mutedText } }
-            Text { text: "edit"; font.family: root.fontFamily; font.pixelSize: 11; color: root.mutedText; anchors.verticalCenter: parent.verticalCenter }
+            Rectangle { height: 18; width: kbdSort.implicitWidth+8; radius:3; color: Util.alpha(root.foreground, 0.1); Text { id: kbdSort; anchors.centerIn: parent; text: "s"; font.family: root.monoFamily; font.pixelSize: 10; color: root.mutedText } }
+            Text { text: root.newestFirst ? "newest" : "oldest"; font.family: root.fontFamily; font.pixelSize: 11; color: root.mutedText; anchors.verticalCenter: parent.verticalCenter }
           }
         }
 
@@ -614,8 +631,8 @@ Item {
           
           Row {
             spacing: 4; anchors.verticalCenter: parent.verticalCenter
-            Rectangle { height: 18; width: kbdDel.implicitWidth+8; radius:3; color: Util.alpha(root.foreground, 0.1); Text { id: kbdDel; anchors.centerIn: parent; text: "d"; font.family: root.monoFamily; font.pixelSize: 10; color: root.mutedText } }
-            Text { text: "del"; font.family: root.fontFamily; font.pixelSize: 11; color: root.mutedText; anchors.verticalCenter: parent.verticalCenter }
+            Rectangle { height: 18; width: kbdCopy.implicitWidth+8; radius:3; color: Util.alpha(root.foreground, 0.1); Text { id: kbdCopy; anchors.centerIn: parent; text: "c"; font.family: root.monoFamily; font.pixelSize: 10; color: root.mutedText } }
+            Text { text: "copy"; font.family: root.fontFamily; font.pixelSize: 11; color: root.mutedText; anchors.verticalCenter: parent.verticalCenter }
           }
           Row {
             spacing: 4; anchors.verticalCenter: parent.verticalCenter
