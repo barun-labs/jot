@@ -23,6 +23,8 @@ Interactive inbox — check off, edit, delete, filter. Colors follow the active 
   - <kbd>e</kbd> or <kbd>Enter</kbd> — Inline edit mode (<kbd>Enter</kbd> save, <kbd>Esc</kbd> cancel)
   - <kbd>d</kbd> or <kbd>Backspace</kbd> / <kbd>Delete</kbd> — Delete note
   - <kbd>a</kbd> or <kbd>Tab</kbd> — Switch between Inbox and Quick Capture
+  - <kbd>s</kbd> - Toggle sort order (newest-first by default)
+  - <kbd>c</kbd> - Copy note text to clipboard
   - <kbd>/</kbd> — Filter notes
   - <kbd>Esc</kbd> — Close overlay
 - **Atomic File Sync**: Reads and updates `~/notes/inbox.md` directly.
