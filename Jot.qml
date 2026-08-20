@@ -80,8 +80,12 @@ Item {
     root.opened = true
     root.text = ""
 
+    // Reload in both modes: capture now appends through the loaded model
+    // (saveInbox rewrites the whole file), so inboxItems must be current
+    // before submitCapture, not only in inbox mode.
+    inboxFile.reload()
+
     if (root.mode === "inbox") {
-      inboxFile.reload()
       inboxView.resetState()
     } else {
       Qt.callLater(function() { captureKeyCatcher.forceActiveFocus() })
@@ -129,7 +133,10 @@ Item {
       return
     }
 
-    Quickshell.execDetached([root.pluginDir + "/bin/jot-append", captured])
+    // ponytail: appends onto the loaded model, one writer (FileView). If a
+    // capture ever lands before the initial load, it appends onto an empty
+    // list; watchChanges + the open() reload keep that window sub-perceptible.
+    root.saveInbox(InboxModel.appendItem(root.inboxItems, captured))
     root.dismiss()
   }
 

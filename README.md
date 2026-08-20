@@ -54,10 +54,11 @@ Customizable via `~/.config/jot/config.json`:
 
 ```json
 {
-  "file": "~/notes/inbox.md",
-  "template": "- [ ] %Y-%m-%d %H:%M {text}"
+  "file": "~/notes/inbox.md"
 }
 ```
+
+The entry format is fixed (`- [ ] YYYY-MM-DD HH:MM text`) so the parser and writer always agree.
 
 ---
 

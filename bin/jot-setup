@@ -12,8 +12,7 @@ ln -sfn "$PLUGIN_DIR/bin/jot" "$BIN_DIR/jot"
 if [[ ! -e "$HOME/.config/jot/config.json" ]]; then
   cat >"$HOME/.config/jot/config.json" <<'EOF'
 {
-  "file": "~/notes/inbox.md",
-  "template": "- [ ] %Y-%m-%d %H:%M {text}"
+  "file": "~/notes/inbox.md"
 }
 EOF
 fi

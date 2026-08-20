@@ -103,6 +103,26 @@ function serializeInbox(items) {
   return lines.join("\n") + "\n";
 }
 
+function appendItem(items, text) {
+  var clean = String(text || "").trim();
+  if (!clean) return items || [];
+  var lines = clean.split("\n");
+  var first = lines.shift();
+  var copy = (items || []).slice();
+  var ts = formatCurrentTimestamp();
+  copy.push({
+    id: copy.length,
+    checked: false,
+    timestamp: ts,
+    displayTime: formatDisplayTime(ts),
+    text: first,
+    extra: lines.join("\n"),
+    isTask: true,
+    rawPrefix: ""
+  });
+  return copy;
+}
+
 function toggleItemAt(items, index) {
   if (!items || index < 0 || index >= items.length) return items;
   var copy = items.slice();
